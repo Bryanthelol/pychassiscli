@@ -66,6 +66,9 @@ def copy_files(src_dir, dest_dir):
         src_file_path = os.path.join(src_dir, file_)
         output_file = os.path.join(dest_dir, file_)
         if os.path.isdir(src_file_path):
+            if not os.access(output_file, os.F_OK):
+                with status(f'Creating directory {os.path.abspath(output_file)!r}'):
+                    os.makedirs(output_file)
             copy_files(src_file_path, output_file)
         else:
             with status(f'Generating {os.path.abspath(output_file)}'):
