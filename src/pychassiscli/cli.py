@@ -3,7 +3,7 @@ import os
 import click
 from rich import print as rich_print
 
-from utils import get_directory, status, copy_files
+from pychassiscli.utils import get_directory, status, copy_files
 
 INIT_TYPE_CHOICES = ['apiflask', 'nameko']
 
