@@ -65,8 +65,11 @@ def copy_files(src_dir, dest_dir):
 
         src_file_path = os.path.join(src_dir, file_)
         output_file = os.path.join(dest_dir, file_)
-        with status(f'Generating {os.path.abspath(output_file)}'):
-            shutil.copy(src_file_path, output_file)
+        if os.path.isdir(src_file_path):
+            copy_files(src_file_path, output_file)
+        else:
+            with status(f'Generating {os.path.abspath(output_file)}'):
+                shutil.copy(src_file_path, output_file)
 
 
 def template_to_file(

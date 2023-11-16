@@ -17,7 +17,6 @@ def cli():
 @click.option('-d', '--directory',
               default='.',
               show_default=True,
-              required=True,
               help='The directory name for the template to be placed')
 @click.option('-t', '--type', '_type',
               default='nameko',
