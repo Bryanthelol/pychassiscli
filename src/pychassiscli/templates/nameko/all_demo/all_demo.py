@@ -1,5 +1,6 @@
 import json
 
+from nameko import config
 from nameko.events import EventDispatcher, event_handler
 from nameko.rpc import rpc, ServiceRpc
 from nameko.timer import timer
@@ -15,7 +16,7 @@ class HttpDemoService:
 
     tracer = Tracer()
     sentry = init_sentry()
-    statsd = init_statsd('prod')
+    statsd = init_statsd(config['STATSD_PREFIX'], config['STATSD_HOST'])
 
     @http("GET", "/broken")
     @statsd.timer('broken')
