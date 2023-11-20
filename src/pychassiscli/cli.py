@@ -5,11 +5,11 @@ from rich import print as rich_print
 
 from pychassiscli.utils import get_directory, status, copy_files, check_docker
 
-from utils import (start_metric_servers, stop_metric_servers, start_prometheus, start_statsd_exporter,
+from pychassiscli.utils import (start_metric_servers, stop_metric_servers, start_prometheus, start_statsd_exporter,
                    start_statsd_agent, start_grafana, start_metric_network, stop_metric_network, stop_grafana,
                    stop_prometheus, stop_statsd_exporter, stop_statsd_agent, refresh_metric_servers)
 
-GENERATE_TYPE_CHOICES = ['apiflask', 'nameko', 'metrics']
+GENERATE_TYPE_CHOICES = ['apiflask', 'nameko', 'metrics', 'unit_test']
 SERVICE_CHOICES = ['metrics', 'metrics_network', 'prometheus', 'grafana', 'statsd_exporter', 'statsd_agent']
 REFRESH_SERVICE_CHOICES = ['metrics']
 
@@ -69,6 +69,17 @@ def gen(directory, _type, nameko_module, class_name_str):
         if not class_name_str:
             # TODO input 让用户在命令行输入
             pass
+    if _type == 'unit_test':
+        if not os.access(directory, os.F_OK) or not os.listdir(directory):
+            rich_print('Directory {} dose not exist or is empty'.format(directory))
+            return
+
+        tests_dir = os.path.join(get_directory('tests'), 'unit')
+        if not os.access(tests_dir, os.F_OK):
+            rich_print('No such test type {}'.format('unit'))
+            return
+
+        copy_files(tests_dir, directory)
     else:
         template_dir = os.path.join(get_directory('templates'), _type)
         if not os.access(template_dir, os.F_OK):
