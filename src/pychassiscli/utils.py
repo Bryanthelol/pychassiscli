@@ -24,13 +24,13 @@ def check_docker():
         rich_print('Please start docker correctly')
         raise
 
-    rich_print('[bold magenta]Docker is installed successfully[/bold magenta]', ":vampire:")
+    rich_print('Good! [bold magenta]Docker is installed already[/bold magenta]', ":vampire:")
 
     if not docker.compose.is_installed():
         rich_print('Please install docker compose firstly')
         raise
 
-    rich_print('[bold magenta]Docker Compose is installed successfully[/bold magenta]', ":vampire:")
+    rich_print('Good! [bold magenta]Docker Compose is installed already[/bold magenta]', ":vampire:")
 
 
 @contextmanager
@@ -112,7 +112,7 @@ def stop_metric_network():
 
 def start_statsd_agent():
     with status(f'Starting statsd agent'):
-        metric_configs_dir = os.path.join(get_directory('chassis-agent'), 'metric-configs')
+        metric_configs_dir = os.path.join(get_directory('templates'), 'metric-configs')
         statsd_config_file_path = os.path.join(metric_configs_dir, 'statsd_config.js')
         returned_string = docker.run(image='statsd/statsd:latest', name='statsd-agent', hostname='statsd-agent',
                                      detach=True, restart='always', interactive=True, tty=True,
@@ -136,7 +136,7 @@ def start_statsd_exporter():
 
 def start_prometheus():
     with status(f'Starting prometheus'):
-        prometheus_conf_dir = os.path.join(get_directory('chassis-agent'), 'metric-configs')
+        prometheus_conf_dir = os.path.join(get_directory('templates'), 'metric-configs')
         prometheus_conf_file_path = os.path.join(prometheus_conf_dir, 'prometheus_conf/prometheus.yml')
         returned_string = docker.run(image='prom/prometheus:latest', name='prometheus', hostname='prometheus',
                                      detach=True, restart='always', tty=True, interactive=True,
@@ -148,7 +148,7 @@ def start_prometheus():
 
 def start_grafana():
     with status(f'Starting grafana'):
-        grafana_conf_dir = os.path.join(get_directory('chassis-agent'), 'metric-configs')
+        grafana_conf_dir = os.path.join(get_directory('templates'), 'metric-configs')
         grafana_provisioning_path = os.path.join(grafana_conf_dir, 'grafana_conf/provisioning')
         grafana_config_path = os.path.join(grafana_conf_dir, 'grafana_conf/config/grafana.ini')
         grafana_dashboard_path = os.path.join(os.getcwd(), 'grafana_dashboards')
