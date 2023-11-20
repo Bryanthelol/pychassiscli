@@ -25,14 +25,9 @@ SENTRY:
     CLIENT_CONFIG:
         site: ${SENTRY_SITE}
 
-STATSD:
-  prod:
-    enabled: true
-    protocol: "udp"
-    host: ${STATSD_HOST}
-    port: ${STATSD_PORT}
-    prefix: ${STATSD_PREFIX}
-    maxudpsize: 512
+STATSD_HOST: ${STATSD_HOST}
+STATSD_PORT: ${STATSD_PORT}
+STATSD_PREFIX: ${STATSD_PREFIX}
 
 DEBUG: ${DEBUG}
 

@@ -3,7 +3,7 @@ import os
 import click
 from rich import print as rich_print
 
-from pychassiscli.utils import get_directory, status, copy_files, check_docker
+from pychassiscli.utils import get_directory, status, copy_files, check_docker, generate_metric_config
 
 from pychassiscli.utils import (start_metric_servers, stop_metric_servers, start_prometheus, start_statsd_exporter,
                    start_statsd_agent, start_grafana, start_metric_network, stop_metric_network, stop_grafana,
@@ -62,13 +62,14 @@ def gen(directory, _type, nameko_module, class_name_str):
     Generate a bunch of files of the project via templates.
     """
     if _type == 'metrics':
-        rich_print('To be done')
         if not nameko_module:
             # TODO input 让用户在命令行输入
             pass
         if not class_name_str:
             # TODO input 让用户在命令行输入
             pass
+        generate_metric_config(nameko_module, class_name_str)
+
     if _type == 'unit_test':
         if not os.access(directory, os.F_OK) or not os.listdir(directory):
             rich_print('Directory {} dose not exist or is empty'.format(directory))

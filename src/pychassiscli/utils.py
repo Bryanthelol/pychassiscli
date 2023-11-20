@@ -92,6 +92,66 @@ def template_to_file(
             f.write(output)
 
 
+def generate_metric_config(nameko_module, class_name_str):
+    import sys
+    import inspect
+    import uuid
+    sys.path.append(os.getcwd())
+    for root, dirs, files in os.walk(os.getcwd()):
+        for _dir in dirs:
+            sys.path.append(os.path.join(root, _dir))
+
+    # Extract information of statsd config from the class of nameko service
+    file_name = nameko_module.split('.')[-1]
+    _module = __import__(nameko_module)
+
+    config_list = []
+    for class_name in class_name_str.split(','):
+        members = inspect.getmembers(getattr(getattr(_module, file_name), class_name), predicate=inspect.isfunction)
+        for member_tuple in members:
+            name, _obj = member_tuple
+            unwrap = inspect.getclosurevars(_obj)
+            if unwrap.nonlocals.get('self') and getattr(unwrap.nonlocals['self'], 'client'):
+                statsd_prefix = unwrap.nonlocals['self'].client._prefix
+                stat_name = unwrap.nonlocals['self'].stat
+                config_list.append({
+                    'statsd_prefix': statsd_prefix,
+                    'stat_name': stat_name,
+                    'class_name': class_name
+                })
+
+    # Generate one file of statsd config yaml for statsd exporter
+    with status(f'Creating statsd_mapping.yml'):
+        metric_configs_dir = os.path.join(get_directory('templates'), 'metric-configs')
+        template_file_path = os.path.join(metric_configs_dir, 'statsd_mapping.yml.mako')
+        output_file = os.path.join('.', f'statsd_mapping.yml')
+        template_to_file(template_file=template_file_path, dest=output_file, output_encoding='utf-8',
+                         **{'config_list': config_list})
+
+    # Generate files of json for grafana dashboard
+    if not os.access('grafana_dashboards', os.F_OK):
+        with status(f'Creating directory {os.path.abspath("grafana_dashboards")!r}'):
+            os.makedirs('grafana_dashboards')
+
+    with status(f'Creating files of Grafana.json into the directory of grafana_dashboards'):
+        for class_name in class_name_str.split(','):
+            grafana_list = []
+            for config in config_list:
+                if config['class_name'] == class_name:
+                    grafana_list.append(config)
+            for idx, grafana_dict in enumerate(grafana_list):
+                if idx + 1 == len(grafana_list):
+                    grafana_dict['is_last'] = 1
+                else:
+                    grafana_dict['is_last'] = 0
+            grafana_configs_dir = os.path.join(get_directory('templates'), 'metric-configs')
+            grafana_file_path = os.path.join(grafana_configs_dir, 'grafana.json.mako')
+            output_file = os.path.join('grafana_dashboards', f'{class_name}_Grafana.json')
+            template_to_file(template_file=grafana_file_path, dest=output_file, output_encoding='utf-8',
+                             **{'service_name': class_name, 'uid': uuid.uuid4(),
+                                'grafana_list': grafana_list})
+
+
 def start_network(network_name):
     with status(f'Starting network {network_name}'):
         docker.network.create(network_name, driver='bridge')

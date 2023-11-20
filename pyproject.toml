@@ -1,6 +1,6 @@
 [project]
 name = "pychassiscli"
-version = "0.3.3"
+version = "0.3.4"
 description = "A lightweight Python distributed microservice command line tool"
 authors = [
     { name = "BryantHe", email = "bryantsisu@qq.com" },
