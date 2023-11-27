@@ -16,7 +16,7 @@ class HttpDemoService:
 
     tracer = Tracer()
     sentry = init_sentry()
-    statsd = init_statsd(config['STATSD_PREFIX'], config['STATSD_HOST'])
+    statsd = init_statsd(config.get('STATSD_PREFIX'), config.get('STATSD_HOST'))
 
     @http("GET", "/broken")
     @statsd.timer('broken')
@@ -44,7 +44,7 @@ class RpcResponderDemoService:
 
     tracer = Tracer()
     sentry = init_sentry()
-    statsd = init_statsd('prod')
+    statsd = init_statsd(config.get('STATSD_PREFIX'), config.get('STATSD_HOST'))
 
     @rpc
     @statsd.timer('hello')
@@ -59,7 +59,7 @@ class RpcCallerDemoService:
     remote = ServiceRpc("rpc_responder_demo_service")
 
     sentry = init_sentry()
-    statsd = init_statsd('prod')
+    statsd = init_statsd(config.get('STATSD_PREFIX'), config.get('STATSD_HOST'))
 
     @rpc
     @statsd.timer('remote_hello')
@@ -74,7 +74,7 @@ class EventPublisherService:
 
     tracer = Tracer()
     sentry = init_sentry()
-    statsd = init_statsd('prod')
+    statsd = init_statsd(config.get('STATSD_PREFIX'), config.get('STATSD_HOST'))
 
     dispatch = EventDispatcher()
 
@@ -90,7 +90,7 @@ class AnEventListenerService:
 
     tracer = Tracer()
     sentry = init_sentry()
-    statsd = init_statsd('prod')
+    statsd = init_statsd(config.get('STATSD_PREFIX'), config.get('STATSD_HOST'))
 
     @event_handler("publisher_service", "an_event")
     @statsd.timer('consume_an_event')
@@ -104,7 +104,7 @@ class AnotherEventListenerService:
 
     tracer = Tracer()
     sentry = init_sentry()
-    statsd = init_statsd('prod')
+    statsd = init_statsd(config.get('STATSD_PREFIX'), config.get('STATSD_HOST'))
 
     @event_handler("publisher_service", "another_event")
     @statsd.timer('consume_another_event')
@@ -118,7 +118,7 @@ class ListenBothEventsService:
 
     tracer = Tracer()
     sentry = init_sentry()
-    statsd = init_statsd('prod')
+    statsd = init_statsd(config.get('STATSD_PREFIX'), config.get('STATSD_HOST'))
 
     @event_handler("publisher_service", "an_event")
     @statsd.timer('consume_an_event')
@@ -137,7 +137,7 @@ class Timer:
 
     tracer = Tracer()
     sentry = init_sentry()
-    statsd = init_statsd('prod')
+    statsd = init_statsd(config.get('STATSD_PREFIX'), config.get('STATSD_HOST'))
 
     @timer(interval=1)
     @statsd.timer('ping')
