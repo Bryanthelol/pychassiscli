@@ -69,6 +69,7 @@ def gen(directory, _type, nameko_module, class_name_str):
             # TODO input 让用户在命令行输入
             pass
         generate_metric_config(nameko_module, class_name_str)
+        return
 
     if _type == 'unit_test':
         if not os.access(directory, os.F_OK) or not os.listdir(directory):
