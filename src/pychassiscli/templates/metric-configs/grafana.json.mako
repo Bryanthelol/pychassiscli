@@ -41,7 +41,7 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 12,
-        "w": 12,
+        "w": 24,
         "x": 0,
         "y": 0
       },
