@@ -26,11 +26,11 @@ def check_docker():
 
     rich_print('Good! [bold magenta]Docker is installed already[/bold magenta]', ":vampire:")
 
-    if not docker.compose.is_installed():
-        rich_print('Please install docker compose firstly')
-        raise
-
-    rich_print('Good! [bold magenta]Docker Compose is installed already[/bold magenta]', ":vampire:")
+    # if not docker.compose.is_installed():
+    #     rich_print('Please install docker compose firstly')
+    #     raise
+    #
+    # rich_print('Good! [bold magenta]Docker Compose is installed already[/bold magenta]', ":vampire:")
 
 
 @contextmanager
