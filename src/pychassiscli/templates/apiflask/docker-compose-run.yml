@@ -7,18 +7,30 @@ services:
         - .apiflaskenv
         - .apiflask.env
       ports:
-        - "5000:5000"
+        - target: 5000
+          published: 6100
+          mode: host
       deploy:
         mode: replicated
-        replicas: 6
+        replicas: 2
+        resources:
+          reservations:
+            cpus: '0.05'
+            memory: 100M
+          limits:
+            cpus: '0.40'
+            memory: 300M
         update_config:
-          parallelism: 3
+          parallelism: 1
           failure_action: rollback
         restart_policy:
           condition: on-failure
           delay: 5s
-          max_attempts: 3
+          max_attempts: 1
           window: 120s
+        placement:
+          constraints:
+            - 'node.role == worker'
       networks:
         - apiflask-api-network
 
