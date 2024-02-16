@@ -2,9 +2,9 @@ AMQP_URI: pyamqp://${RABBIT_USER:admin}:${RABBIT_PASSWORD:admin}@${RABBIT_HOST:l
 # WEB_SERVER_ADDRESS: '0.0.0.0:8000'
 RPC_EXCHANGE: 'nameko-rpc'
 
-max_workers: 20
-PREFETCH_COUNT: 20
-parent_calls_tracked: 20
+max_workers: 10
+PREFETCH_COUNT: 10
+parent_calls_tracked: 10
 
 LOGGING:
     version: 1
